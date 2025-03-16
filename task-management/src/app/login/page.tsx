@@ -1,17 +1,10 @@
 'use client';
 import { useState } from "react";
+import LoginResponse from '../../interfaces/responses';
 
-interface LoginResponse {
-    token?: string;
-    user?: {
-        id: string;
-        username: string;
-    };
-    error?: string;
-}
 
 const Login = () => {
-    const [response, setResponse] = useState<string | null>(null);
+    const [response, setResponse] = useState<LoginResponse | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const handleLogin = async (usernameValue: string, passwordValue: string) => {
@@ -32,30 +25,33 @@ const Login = () => {
 
             if (!res.ok) {
                 const errorData = await res.json();
-                throw new Error(errorData.error || 'Login failed');
+                throw new Error(errorData.message || 'Login failed');
             }
 
             const data: LoginResponse = await res.json();
-            setResponse(JSON.stringify(data));
+            setResponse(data);
             return data;
 
         } catch (error) {
             console.error('Login failed:', error);
-            setResponse(error instanceof Error ? error.message : 'Error during login');
+            setResponse(null);
             return null;
+
         } finally {
             setIsLoading(false);
         }
     }
 
+    console.log('Login page rendered');
+
     return (
-        <div>
+        <>
             <h1>Login</h1>
             <button onClick={() => handleLogin('matias10', '123')} disabled={isLoading}>
                 {isLoading ? 'Logging in...' : 'Login'}
             </button>
-            {response && <p>{response}</p>}
-        </div>
+            {response && <p>{response.user.name}</p>}
+        </>
     );
 }
 
