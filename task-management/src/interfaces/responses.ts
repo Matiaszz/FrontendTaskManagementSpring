@@ -1,4 +1,4 @@
-export interface User {
+export default interface IUser {
     id: string;
     username: string;
     role: string;
@@ -13,7 +13,3 @@ export interface User {
     }[];
 }
 
-export default interface LoginResponse {
-    token: string;
-    user: User;
-}
