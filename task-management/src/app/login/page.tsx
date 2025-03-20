@@ -66,6 +66,7 @@ const Login = () => {
 
             const data: IUser = await res.json();
             setUser(data);
+            checkLogin();
             return data;
 
         } catch (error) {
@@ -77,6 +78,7 @@ const Login = () => {
             setIsLoading(false);
         }
     };
+
 
     return (
         <>
