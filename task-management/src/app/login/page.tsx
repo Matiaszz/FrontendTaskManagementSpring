@@ -2,21 +2,27 @@
 import { useState, useEffect } from "react";
 import IUser from '../../interfaces/responses';
 import { getUser } from '../services/userService';
+import { useRouter } from "next/navigation";
 
 
 const Login = () => {
+    const router = useRouter();
     const url = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
     const [user, setUser] = useState<IUser | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
 
     useEffect(() => {
-        getUser(setIsLoading, setUser, url);
+        getUser().then((data) => {
+            if (data) {
+                setUser(data)
+                router.push('/profile');
+            }
+
+        });
     }, []);
 
     const handleLogin = async (usernameValue: string, passwordValue: string) => {
-
-        if (user) return user;
 
         setIsLoading(true);
 
@@ -42,7 +48,8 @@ const Login = () => {
 
             const data: IUser = await res.json();
             setUser(data);
-            getUser(setIsLoading, setUser, url);
+            getUser().then((data) => { setUser(data) });
+            router.push('/profile');
             return data;
 
         } catch (error) {

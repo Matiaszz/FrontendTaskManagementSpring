@@ -1,34 +1,22 @@
-import { Dispatch, SetStateAction } from "react";
 import IUser from "@/interfaces/responses";
 
-export const getUser = async (
-    setIsLoading: Dispatch<SetStateAction<boolean>>,
-    setUser: Dispatch<SetStateAction<IUser | null>>,
-    url: string
-): Promise<IUser | null> => {
-    setIsLoading(true);
+export const getUser = async (): Promise<IUser | null> => {
+    const url = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 
     try {
+
         const res = await fetch(`${url}/auth/user`, {
             method: 'GET',
             credentials: 'include'
         });
 
-        if (!res.ok) {
-            setUser(null);
-            return null;
-        }
+        if (!res.ok) return null;
 
         const data: IUser = await res.json();
-        setUser(data);
         return data;
 
     } catch (error) {
         console.error('Check login failed:', error);
-        setUser(null);
         return null;
-
-    } finally {
-        setIsLoading(false);
     }
 };
