@@ -18,7 +18,11 @@ const Logout = () => {
             });
 
             if (!res.ok) {
-                console.error('Logout failed:', res);
+                console.error(
+                    'Logout failed (Probably user is not authenticated): ',
+                    res.text()
+                );
+                router.push('/login');
                 return;
             }
 

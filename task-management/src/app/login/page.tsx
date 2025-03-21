@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from "react";
 import IUser from '../../interfaces/responses';
+import { getUser } from '../services/userService';
 
 
 const Login = () => {
@@ -8,34 +9,9 @@ const Login = () => {
     const [user, setUser] = useState<IUser | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    const checkLogin = async () => {
-        setIsLoading(true);
 
-        try {
-            const res = await fetch(`${url}/auth/user`, {
-                method: 'GET',
-                credentials: 'include'
-            });
-
-            if (!res.ok) {
-                return null;
-            }
-
-            const data: IUser = await res.json();
-            setUser(data);
-            return data;
-
-        } catch (error) {
-            console.error('Check login failed:', error);
-            setUser(null);
-            return null;
-
-        } finally {
-            setIsLoading(false);
-        }
-    };
     useEffect(() => {
-        checkLogin();
+        getUser(setIsLoading, setUser, url);
     }, []);
 
     const handleLogin = async (usernameValue: string, passwordValue: string) => {
@@ -66,7 +42,7 @@ const Login = () => {
 
             const data: IUser = await res.json();
             setUser(data);
-            checkLogin();
+            getUser(setIsLoading, setUser, url);
             return data;
 
         } catch (error) {
