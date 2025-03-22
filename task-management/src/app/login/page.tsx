@@ -1,28 +1,29 @@
 'use client';
-import { useState, useEffect } from "react";
+import { useState, useEffect, FormEvent } from "react";
 import IUser from '../../interfaces/responses';
 import { getUser } from '../services/userService';
 import { useRouter } from "next/navigation";
-
 
 const Login = () => {
     const router = useRouter();
     const url = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
     const [user, setUser] = useState<IUser | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
-
+    const [username, setUsername] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
 
     useEffect(() => {
         getUser().then((data) => {
             if (data) {
-                setUser(data)
+                setUser(data);
                 router.push('/profile');
             }
-
         });
     }, []);
 
-    const handleLogin = async (usernameValue: string, passwordValue: string) => {
+    const handleLogin = async (e: FormEvent) => {
+        e.preventDefault();
+        if (user) return;
 
         setIsLoading(true);
 
@@ -34,12 +35,10 @@ const Login = () => {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    username: usernameValue,
-                    password: passwordValue
+                    username,
+                    password
                 })
             });
-
-
 
             if (!res.ok) {
                 const errorData = await res.json();
@@ -48,35 +47,51 @@ const Login = () => {
 
             const data: IUser = await res.json();
             setUser(data);
-            getUser().then((data) => { setUser(data) });
             router.push('/profile');
-            return data;
-
         } catch (error) {
             console.error('Login failed:', error);
             setUser(null);
-            return null;
-
         } finally {
             setIsLoading(false);
         }
     };
 
-
     return (
         <>
             <h1>Login</h1>
             {!user && (
-                <div>
-                    <button onClick={() => handleLogin('matias10', '123')} disabled={isLoading}>
-                        {isLoading ? 'Logging in...' : 'Login'}
+                <form onSubmit={handleLogin}>
+                    <div>
+                        <label htmlFor="username">Username:</label>
+                        <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            required
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="password">Password:</label>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            required
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                    </div>
+                    <button type="submit" disabled={isLoading}>
+                        {isLoading ? "Logging in..." : "Login"}
                     </button>
-                </div>
+                </form>
             )}
 
             {user && <p>{user.name}</p>}
         </>
     );
-}
+};
 
 export default Login;
