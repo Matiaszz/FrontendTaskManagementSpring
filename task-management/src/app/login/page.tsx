@@ -3,7 +3,6 @@ import { useState, useEffect, FormEvent } from "react";
 import IUser from '../../interfaces/responses';
 import { getUser } from '../services/userService';
 import { useRouter } from "next/navigation";
-import Navbar from '@/components/Navbar';
 
 const Login = () => {
     const router = useRouter();
@@ -61,7 +60,6 @@ const Login = () => {
 
     return (
         <>
-            <Navbar />
             <h1>Login</h1>
             {!user && (
                 <form onSubmit={handleLogin}>

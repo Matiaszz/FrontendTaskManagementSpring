@@ -1,15 +1,15 @@
+'use client';
 import { Switch } from '@/components/ui/switch';
 import { useState } from 'react';
 import FolderIcon from './ui/folder';
 import UserIcon from './ui/account';
-
 
 const Navbar = () => {
     const [isDark, setIsDark] = useState<Boolean>(false);
 
 
     const switchAction = () => {
-        setIsDark(!isDark)
+        setIsDark((prev) => !prev)
 
         if (!isDark) {
             document.getElementById("body")?.classList.add("dark");
