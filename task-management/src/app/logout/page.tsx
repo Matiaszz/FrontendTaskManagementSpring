@@ -22,11 +22,11 @@ const Logout = () => {
                     'Logout failed (Probably user is not authenticated): ',
                     res.text()
                 );
-                router.push('/login');
+                router.push('/auth');
                 return;
             }
 
-            router.push('/login');
+            router.push('/auth');
 
         } catch (error) {
             console.error('Logout failed:', error);

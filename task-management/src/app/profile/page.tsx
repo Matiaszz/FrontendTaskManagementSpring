@@ -37,7 +37,7 @@ const Profile = () => {
         <>
             <h1>Profile</h1>
             {user && !isLoading && (
-                <p className='text-white'>{user.username}</p>
+                <p>{user.username}</p>
 
             )}
         </>
