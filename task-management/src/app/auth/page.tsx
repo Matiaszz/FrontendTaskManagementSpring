@@ -22,7 +22,6 @@ const Login = () => {
     const [email, setEmail] = useState("");
     const [description, setDescription] = useState("");
 
-    // 🔁 Check if user is already authenticated
     useEffect(() => {
         getUser().then((data) => {
             if (data) {
@@ -43,6 +42,8 @@ const Login = () => {
             if (!isLogin && password !== confirmPassword) {
                 setErrors(["Password and confirmation must match."]);
                 setIsLoading(false);
+                setPassword('');
+                setConfirmPassword('');
                 return;
             }
 
@@ -87,16 +88,16 @@ const Login = () => {
 
             {!user && (
                 <form onSubmit={handleSubmit}>
-                    <FormField field="Username" action={setUsername} />
-                    <FormField field="Password" action={setPassword} type="password" />
+                    <FormField value={username} field="Username" action={setUsername} />
+                    <FormField value={password} field="Password" action={setPassword} type="password" />
 
                     {!isLogin && (
                         <>
-                            <FormField field="Password confimation" action={setConfirmPassword} type="password" />
-                            <FormField field="Name" action={setName} />
-                            <FormField field="Last name" action={setLastName} />
-                            <FormField field="Email" action={setEmail} type="email" />
-                            <FormField field="Description" action={setDescription} />
+                            <FormField value={confirmPassword} field="Password confimation" action={setConfirmPassword} type="password" />
+                            <FormField value={name} field="Name" action={setName} />
+                            <FormField value={lastName} field="Last name" action={setLastName} />
+                            <FormField value={email} field="Email" action={setEmail} type="email" />
+                            <FormField value={description} field="Description" action={setDescription} />
                         </>
                     )}
 
