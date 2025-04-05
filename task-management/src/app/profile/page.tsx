@@ -15,7 +15,7 @@ const Profile = () => {
         try {
             getUser().then((data) => {
                 if (!data) {
-                    router.push('/login');
+                    router.push('/auth');
                     return;
                 }
                 setUser(data)
@@ -23,7 +23,7 @@ const Profile = () => {
 
         } catch (error) {
             console.error('Profile failed:', error);
-            router.push('/login');
+            router.push('/auth');
             return;
 
         } finally {

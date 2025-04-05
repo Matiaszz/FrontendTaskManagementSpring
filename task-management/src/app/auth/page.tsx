@@ -9,10 +9,9 @@ const Auth = () => {
     const router = useRouter();
     const url = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 
-    const [user, setUser] = useState<IUser | null>(null);
     const [isLogin, setIsLogin] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
-    const [errors, setErrors] = useState<string[]>([]);
+    const [toasts, setToasts] = useState<string[]>([]);
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -25,22 +24,27 @@ const Auth = () => {
     useEffect(() => {
         getUser().then((data) => {
             if (data) {
-                setUser(data);
                 router.push('/profile');
             }
         });
     }, [router]);
 
+    const showToast = (message: string) => {
+        setToasts((prev) => [...prev, message]);
+        setTimeout(() => {
+            setToasts((prev) => prev.slice(1));
+        }, 4000);
+    };
+
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        setErrors([]);
         setIsLoading(true);
 
         try {
             const endpoint = isLogin ? 'login' : 'register';
 
             if (!isLogin && password !== confirmPassword) {
-                setErrors(["Password and confirmation must match."]);
+                showToast("Password and confirmation must match.");
                 setIsLoading(false);
                 setPassword('');
                 setConfirmPassword('');
@@ -63,37 +67,42 @@ const Auth = () => {
                 throw new Error(errorData.message || `${isLogin ? 'Login' : 'Registration'} failed`);
             }
 
-            const data: IUser = await res.json();
-            setUser(data);
             router.push('/profile');
 
         } catch (error: any) {
-            setErrors([error.message]);
+            showToast(error.message);
         } finally {
             setIsLoading(false);
         }
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center px-4 text-white">
-            <div className="bg-gray-900 w-full max-w-md p-8 rounded-2xl shadow-xl transition-all duration-300 ease-in-out overflow-hidden relative">
+        <div className="min-h-screen flex items-center justify-center px-4 text-white relative">
+
+            {/* TOASTS */}
+            <div className="absolute top-4 right-4 flex flex-col gap-2 z-50">
+                {toasts.map((msg, index) => (
+                    <div
+                        key={index}
+                        className="bg-red-400 text-white border border-red-500 px-5 py-3 rounded-lg text-sm animate-fadeSlide shadow-lg"
+                    >
+                        {msg}
+                    </div>
+                ))}
+            </div>
+
+            <div className="bg-gray-900 w-full max-w-md p-8 rounded-2xl shadow-xl overflow-hidden relative">
                 <h1 className="text-3xl font-semibold text-center mb-6">
                     {isLogin ? "Login" : "Create your account"}
                 </h1>
 
-                {errors.length > 0 && (
-                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4 text-sm">
-                        {errors.map((err, index) => (
-                            <p key={index}>{err}</p>
-                        ))}
-                    </div>
-                )}
-
-                <div className="relative w-full overflow-hidden transition-all duration-500 ease-in-out"
-                    style={{ height: isLogin ? '220px' : '520px' }}>
+                <div
+                    className={`relative w-full overflow-hidden transition-all duration-500 ease-in-out ${isLogin ? 'h-[220px]' : 'h-[520px]'}`}
+                >
                     <div
                         className={`flex w-[200%] h-full transition-transform duration-500 ease-in-out ${isLogin ? 'translate-x-0' : '-translate-x-1/2'}`}
                     >
+                        {/* Login form */}
                         <form
                             onSubmit={handleSubmit}
                             className="w-full flex flex-col justify-center space-y-4 pr-4"
@@ -104,12 +113,17 @@ const Auth = () => {
                             <button
                                 type="submit"
                                 disabled={isLoading}
-                                className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+                                className="w-full bg-blue-600 hover:cursor-pointer text-white py-2 rounded-lg hover:bg-blue-700 transition"
                             >
                                 {isLoading ? "Logging in..." : "Login"}
                             </button>
                         </form>
-                        <form onSubmit={handleSubmit} className="w-full space-y-4 pl-4 pt-2">
+
+                        {/* Register form */}
+                        <form
+                            onSubmit={handleSubmit}
+                            className="w-full space-y-4 pl-4 pt-2"
+                        >
                             <FormField value={username} field="Username" action={setUsername} />
                             <FormField value={password} field="Password" action={setPassword} type="password" />
                             <FormField value={confirmPassword} field="Confirm password" action={setConfirmPassword} type="password" />
@@ -121,7 +135,7 @@ const Auth = () => {
                             <button
                                 type="submit"
                                 disabled={isLoading}
-                                className="w-full hover:cursor-pointer bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+                                className="w-full bg-blue-600 hover:cursor-pointer text-white py-2 rounded-lg hover:bg-blue-700 transition"
                             >
                                 {isLoading ? "Registering..." : "Register"}
                             </button>
