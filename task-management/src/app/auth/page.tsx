@@ -2,7 +2,6 @@
 import { useState, useEffect, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import FormField from "@/components/FormField";
-import IUser from '../../interfaces/responses';
 import { getUser } from '../services/userService';
 
 const Auth = () => {
