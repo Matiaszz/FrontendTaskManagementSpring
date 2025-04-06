@@ -1,22 +1,21 @@
 import IUser from "@/interfaces/responses";
+import api from "./api";
 
-export const getUser = async (): Promise<IUser | null> => {
-    const url = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
-
+export async function getUser(): Promise<IUser | null> {
     try {
-
-        const res = await fetch(`${url}/auth/user`, {
-            method: 'GET',
-            credentials: 'include'
-        });
-
-        if (!res.ok) return null;
-
-        const data: IUser = await res.json();
-        return data;
-
-    } catch (error) {
-        console.error('Check login failed:', error);
+        const response = await api.get("/user");
+        return response.data;
+    } catch (err) {
         return null;
     }
-};
+}
+
+export async function updateUser(data: Partial<IUser>): Promise<IUser | null> {
+    try {
+        const response = await api.put("/user", data, { withCredentials: true });
+        return response.data;
+    } catch (err) {
+        console.error("Failed to update user", err);
+        return null;
+    }
+}
