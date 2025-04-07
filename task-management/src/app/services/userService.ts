@@ -1,10 +1,11 @@
-import IUser from "@/interfaces/responses";
+import { IUser } from "@/interfaces/responses";
 import api from "./api";
 
 export async function getUser(): Promise<IUser | null> {
     try {
         const response = await api.get("/auth/user");
         return response.data;
+
 
     } catch (err) {
         return null;

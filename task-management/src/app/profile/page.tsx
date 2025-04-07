@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getUser, updateUser } from "../services/userService";
-import IUser from "@/interfaces/responses";
+import { IUser } from "@/interfaces/responses";
 
 interface FormData {
     name: string;

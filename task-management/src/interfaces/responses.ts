@@ -1,4 +1,4 @@
-export default interface IUser {
+export interface IUser {
     id: string;
     username: string;
     role: string;
@@ -13,3 +13,19 @@ export default interface IUser {
     }[];
 }
 
+export interface ITask {
+    id: string,
+    name: string,
+    shortDescription: string,
+    longDescription: string,
+    isDone: boolean
+}
+
+export interface ITaskList {
+    id: string,
+    title: string,
+    shortDescription: string,
+    longDescription: string,
+    color: string,
+    tasks: ITask[]
+}
