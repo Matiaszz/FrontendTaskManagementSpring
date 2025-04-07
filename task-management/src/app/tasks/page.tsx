@@ -3,13 +3,15 @@ import { useEffect, useState } from "react";
 import { ITaskList } from "@/interfaces/responses";
 import { getTaskListByLoggedUser } from "../services/taskListService";
 import { getUser } from "../services/userService";
-import { toggleIsDone } from "../services/taskService"; // ✅ import
+import { deleteTask, toggleTaskStatus } from "../services/taskService";
 import { useRouter } from "next/navigation";
-import { ChevronDown, ChevronUp, Edit, Trash2, CheckCircle, Undo } from "lucide-react";
+import { ChevronDown, ChevronUp, Edit, Trash2, CheckCircle, Undo, X } from "lucide-react";
 
 const Task = () => {
     const [taskLists, setTaskLists] = useState<ITaskList[] | null>(null);
     const [openTaskListId, setOpenTaskListId] = useState<string | null>(null);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
     const router = useRouter();
 
     useEffect(() => {
@@ -32,24 +34,26 @@ const Task = () => {
     const toggleTaskList = (id: string) => {
         setOpenTaskListId(prev => (prev === id ? null : id));
     };
-    const handleToggleTask = async (listId: string, taskId: string, currentStatus: boolean) => {
-        const updatedTask = await toggleIsDone(taskId, currentStatus);
-        if (!updatedTask) return;
 
-        setTaskLists(prev => {
-            if (!prev) return prev;
+    const handleToggleDone = async (taskId: string, currentStatus: boolean) => {
+        await toggleTaskStatus(taskId, !currentStatus);
+        const updatedData = await getTaskListByLoggedUser();
+        setTaskLists(updatedData);
+    };
 
-            return prev.map(list =>
-                list.id === listId
-                    ? {
-                        ...list,
-                        tasks: list.tasks.map(task =>
-                            task.id === taskId ? updatedTask : task
-                        )
-                    }
-                    : list
-            );
-        });
+    const confirmDelete = (taskId: string) => {
+        setTaskToDelete(taskId);
+        setShowDeleteModal(true);
+    };
+
+    const handleDelete = async () => {
+        if (taskToDelete) {
+            await deleteTask(taskToDelete);
+            const updatedData = await getTaskListByLoggedUser();
+            setTaskLists(updatedData);
+        }
+        setShowDeleteModal(false);
+        setTaskToDelete(null);
     };
 
     return (
@@ -95,15 +99,10 @@ const Task = () => {
                                                 <button className="hover:text-blue-400">
                                                     <Edit size={18} />
                                                 </button>
-                                                <button className="hover:text-red-500">
+                                                <button className="hover:text-red-500" onClick={() => confirmDelete(task.id)}>
                                                     <Trash2 size={18} />
                                                 </button>
-                                                <button
-                                                    onClick={() =>
-                                                        handleToggleTask(list.id, task.id, task.isDone)
-                                                    }
-                                                    className="hover:text-green-400"
-                                                >
+                                                <button className="hover:text-green-400" onClick={() => handleToggleDone(task.id, task.isDone)}>
                                                     {task.isDone ? <Undo size={18} /> : <CheckCircle size={18} />}
                                                 </button>
                                             </div>
@@ -117,6 +116,29 @@ const Task = () => {
                     </div>
                 ))}
             </div>
+
+            {showDeleteModal && (
+                <div className="fixed inset-0 bg-black/70 flex justify-center items-center z-50">
+                    <div className="bg-gray-800 p-6 rounded-xl shadow-xl text-center w-full max-w-sm border border-gray-700">
+                        <h2 className="text-xl font-semibold text-white mb-4">Confirm Deletion</h2>
+                        <p className="text-gray-300 mb-6">Are you sure you want to delete this task?</p>
+                        <div className="flex justify-center gap-4">
+                            <button
+                                onClick={handleDelete}
+                                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl font-medium"
+                            >
+                                Delete
+                            </button>
+                            <button
+                                onClick={() => setShowDeleteModal(false)}
+                                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-xl font-medium flex items-center gap-1"
+                            >
+                                <X size={16} /> Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

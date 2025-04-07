@@ -29,3 +29,10 @@ export interface ITaskList {
     color: string,
     tasks: ITask[]
 }
+
+export interface ITaskUpdateRequest {
+    name?: string;
+    shortDescription?: string;
+    longDescription?: string;
+    isDone?: boolean;
+}
