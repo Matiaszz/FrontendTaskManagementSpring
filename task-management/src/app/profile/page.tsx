@@ -161,9 +161,15 @@ const ProfilePage = () => {
                     >
                         {updating ? "Updating..." : "Update Profile"}
                     </button>
-
-                    {message && <p className="text-center text-sm mt-2">{message}</p>}
+                    <button
+                        onClick={() => router.push('/logout')}
+                        className="bg-red-600 hover:bg-red-700 transition-all px-6 py-2 rounded text-white font-semibold w-full shadow-md hover:shadow-lg"
+                    >
+                        Logout
+                    </button>
+                    {message && <p className="text-center cursor-pointer text-sm mt-2">{message}</p>}
                 </form>
+
             </div>
         </div>
     );

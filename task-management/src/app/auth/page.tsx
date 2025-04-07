@@ -152,7 +152,9 @@ const Auth = () => {
                         {isLogin ? "Register" : "Login"}
                     </button>
                 </p>
+
             </div>
+
         </div>
     );
 };

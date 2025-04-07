@@ -145,12 +145,12 @@ const Task = () => {
         <div className="min-h-screen  text-white px-6 py-10">
             <div className="flex justify-between items-center mb-10 max-w-4xl mx-auto">
                 <h1 className="text-4xl font-bold text-center text-gray-950 dark:text-white ">Your Task Lists</h1>
-                <button onClick={() => setShowAddListModal(true)} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-xl text-white text-sm">
+                <button onClick={() => setShowAddListModal(true)} className="flex cursor-pointer items-center gap-2 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-xl text-white text-sm">
                     <FolderPlus size={20} /> New Task List
                 </button>
             </div>
             <div className="grid gap-6 max-w-4xl mx-auto">
-                {taskLists?.map((list) => (
+                {taskLists && taskLists.length > 0 && taskLists.map((list) => (
                     <div key={list.id} className="bg-gray-900 p-6 rounded-2xl shadow-lg border border-gray-800 transition">
                         <div className="flex justify-between items-start mb-4">
                             <div>
@@ -158,16 +158,16 @@ const Task = () => {
                                 <p className="text-gray-400">{list.shortDescription}</p>
                             </div>
                             <div className="flex gap-2">
-                                <button onClick={() => openEditTaskListModal(list)} className="hover:text-blue-400" title="Edit List">
+                                <button onClick={() => openEditTaskListModal(list)} className="hover:text-blue-400 cursor-pointer " title="Edit List">
                                     <Edit size={20} />
                                 </button>
-                                <button onClick={() => confirmDeleteTaskList(list.id)} className="hover:text-red-500" title="Delete List">
+                                <button onClick={() => confirmDeleteTaskList(list.id)} className="hover:text-red-500 cursor-pointer " title="Delete List">
                                     <Trash2 size={20} />
                                 </button>
-                                <button onClick={() => openAddModal(list.id)} className="text-green-500 hover:text-green-300" title="Add Task">
+                                <button onClick={() => openAddModal(list.id)} className="text-green-500 hover:text-green-300 cursor-pointer " title="Add Task">
                                     <PlusCircle size={20} />
                                 </button>
-                                <button onClick={() => toggleTaskList(list.id)} className="text-gray-400 hover:text-white">
+                                <button onClick={() => toggleTaskList(list.id)} className="text-gray-400 cursor-pointer  hover:text-white">
                                     {openTaskListId === list.id ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
                                 </button>
                             </div>
@@ -184,9 +184,9 @@ const Task = () => {
                                                 <p className="text-sm text-gray-500 mt-1">{task.longDescription}</p>
                                             </div>
                                             <div className="flex flex-col items-center gap-2">
-                                                <button onClick={() => openEditModal(task)} className="hover:text-blue-400"><Edit size={18} /></button>
-                                                <button onClick={() => confirmDelete(task.id)} className="hover:text-red-500"><Trash2 size={18} /></button>
-                                                <button onClick={() => handleToggleDone(task.id, task.isDone)} className="hover:text-green-400">
+                                                <button onClick={() => openEditModal(task)} className="hover:text-blue-400 cursor-pointer "><Edit size={18} /></button>
+                                                <button onClick={() => confirmDelete(task.id)} className="hover:text-red-500 cursor-pointer "><Trash2 size={18} /></button>
+                                                <button onClick={() => handleToggleDone(task.id, task.isDone)} className="hover:text-green-400 cursor-pointer ">
                                                     {task.isDone ? <Undo size={18} /> : <CheckCircle size={18} />}
                                                 </button>
                                             </div>
@@ -225,8 +225,8 @@ const Task = () => {
                             onChange={(e) => setNewTaskForm({ ...newTaskForm, longDescription: e.target.value })}
                         />
                         <div className="flex justify-end gap-2">
-                            <button onClick={() => setShowAddModal(false)} className="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded-xl">Cancel</button>
-                            <button onClick={handleAddSubmit} className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-xl">Add Task</button>
+                            <button onClick={() => setShowAddModal(false)} className="bg-gray-600 cursor-pointer  hover:bg-gray-700 px-4 py-2 rounded-xl">Cancel</button>
+                            <button onClick={handleAddSubmit} className="bg-green-600 hover:bg-green-700 cursor-pointer  px-4 py-2 rounded-xl">Add Task</button>
                         </div>
                     </div>
                 </div>
@@ -242,8 +242,8 @@ const Task = () => {
                         <input className="w-full p-2 mb-3 rounded bg-gray-700 text-white" placeholder="Short Description" value={editForm.shortDescription} onChange={(e) => setEditForm({ ...editForm, shortDescription: e.target.value })} />
                         <textarea className="w-full p-2 mb-4 rounded bg-gray-700 text-white" placeholder="Long Description" value={editForm.longDescription} onChange={(e) => setEditForm({ ...editForm, longDescription: e.target.value })} />
                         <div className="flex justify-end gap-2">
-                            <button onClick={() => setTaskToEdit(null)} className="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded-xl">Cancel</button>
-                            <button onClick={handleEditSubmit} className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-xl">Save</button>
+                            <button onClick={() => setTaskToEdit(null)} className="bg-gray-600 hover:bg-gray-700 cursor-pointer  px-4 py-2 rounded-xl">Cancel</button>
+                            <button onClick={handleEditSubmit} className="bg-blue-600 hover:bg-blue-700 cursor-pointer  px-4 py-2 rounded-xl">Save</button>
                         </div>
                     </div>
                 </div>
@@ -256,8 +256,8 @@ const Task = () => {
                         <h2 className="text-xl font-semibold text-white mb-4">Confirm Deletion</h2>
                         <p className="text-gray-300 mb-6">Are you sure you want to delete this task?</p>
                         <div className="flex justify-center gap-4">
-                            <button onClick={handleDelete} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl font-medium">Delete</button>
-                            <button onClick={() => setShowDeleteModal(false)} className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-xl font-medium flex items-center gap-1">
+                            <button onClick={handleDelete} className="bg-red-600 cursor-pointer  hover:bg-red-700 text-white px-4 py-2 rounded-xl font-medium">Delete</button>
+                            <button onClick={() => setShowDeleteModal(false)} className="bg-gray-600 cursor-pointer  hover:bg-gray-700 text-white px-4 py-2 rounded-xl font-medium flex items-center gap-1">
                                 <X size={16} /> Cancel
                             </button>
                         </div>
@@ -274,8 +274,23 @@ const Task = () => {
                         <input className="w-full p-2 mb-3 rounded bg-gray-700 text-white" placeholder="Short Description" value={editTaskListForm.shortDescription} onChange={(e) => setEditTaskListForm({ ...editTaskListForm, shortDescription: e.target.value })} />
                         <textarea className="w-full p-2 mb-4 rounded bg-gray-700 text-white" placeholder="Long Description" value={editTaskListForm.longDescription} onChange={(e) => setEditTaskListForm({ ...editTaskListForm, longDescription: e.target.value })} />
                         <div className="flex justify-end gap-2">
-                            <button onClick={() => setTaskListToEdit(null)} className="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded-xl">Cancel</button>
-                            <button onClick={handleEditTaskListSubmit} className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-xl">Save</button>
+                            <button onClick={() => setTaskListToEdit(null)} className="bg-gray-600 cursor-pointer  hover:bg-gray-700 px-4 py-2 rounded-xl">Cancel</button>
+                            <button onClick={handleEditTaskListSubmit} className="bg-blue-600 cursor-pointer  hover:bg-blue-700 px-4 py-2 rounded-xl">Save</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {showAddListModal && (
+                <div className="fixed inset-0 bg-black/70 flex justify-center items-center z-50">
+                    <div className="bg-gray-800 p-6 rounded-xl shadow-xl w-full max-w-md border border-gray-700 text-white">
+                        <h2 className="text-xl font-semibold mb-4">Create New Task List</h2>
+                        <input className="w-full p-2 mb-3 rounded bg-gray-700 text-white" placeholder="Title" value={newListForm.title} onChange={(e) => setNewListForm({ ...newListForm, title: e.target.value })} />
+                        <input className="w-full p-2 mb-3 rounded bg-gray-700 text-white" placeholder="Short Description" value={newListForm.shortDescription} onChange={(e) => setNewListForm({ ...newListForm, shortDescription: e.target.value })} />
+                        <textarea className="w-full p-2 mb-4 rounded bg-gray-700 text-white" placeholder="Long Description" value={newListForm.longDescription} onChange={(e) => setNewListForm({ ...newListForm, longDescription: e.target.value })} />
+                        <div className="flex justify-end gap-2">
+                            <button onClick={() => setShowAddListModal(false)} className="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded-xl cursor-pointer">Cancel</button>
+                            <button onClick={handleAddListSubmit} className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-xl cursor-pointer">Create</button>
                         </div>
                     </div>
                 </div>
@@ -288,8 +303,8 @@ const Task = () => {
                         <h2 className="text-xl font-semibold text-white mb-4">Confirm Deletion</h2>
                         <p className="text-gray-300 mb-6">Are you sure you want to delete this task list?</p>
                         <div className="flex justify-center gap-4">
-                            <button onClick={handleDeleteTaskList} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl font-medium">Delete</button>
-                            <button onClick={() => setShowTaskListDeleteModal(false)} className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-xl font-medium flex items-center gap-1">
+                            <button onClick={handleDeleteTaskList} className="bg-red-600 hover:bg-red-700 cursor-pointer  text-white px-4 py-2 rounded-xl font-medium">Delete</button>
+                            <button onClick={() => setShowTaskListDeleteModal(false)} className="bg-gray-600 cursor-pointer  hover:bg-gray-700 text-white px-4 py-2 rounded-xl font-medium flex items-center gap-1">
                                 <X size={16} /> Cancel
                             </button>
                         </div>
