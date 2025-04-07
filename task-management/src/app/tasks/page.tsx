@@ -142,9 +142,9 @@ const Task = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-950 text-white px-6 py-10">
+        <div className="min-h-screen  text-white px-6 py-10">
             <div className="flex justify-between items-center mb-10 max-w-4xl mx-auto">
-                <h1 className="text-4xl font-bold text-center">Your Task Lists</h1>
+                <h1 className="text-4xl font-bold text-center text-gray-950 dark:text-white ">Your Task Lists</h1>
                 <button onClick={() => setShowAddListModal(true)} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-xl text-white text-sm">
                     <FolderPlus size={20} /> New Task List
                 </button>
@@ -200,6 +200,38 @@ const Task = () => {
                     </div>
                 ))}
             </div>
+
+            {/* Add Task Modal */}
+            {showAddModal && (
+                <div className="fixed inset-0 bg-black/70 flex justify-center items-center z-50">
+                    <div className="bg-gray-800 p-6 rounded-xl shadow-xl w-full max-w-md border border-gray-700 text-white">
+                        <h2 className="text-xl font-semibold mb-4">Add New Task</h2>
+                        <input
+                            className="w-full p-2 mb-3 rounded bg-gray-700 text-white"
+                            placeholder="Name"
+                            value={newTaskForm.name}
+                            onChange={(e) => setNewTaskForm({ ...newTaskForm, name: e.target.value })}
+                        />
+                        <input
+                            className="w-full p-2 mb-3 rounded bg-gray-700 text-white"
+                            placeholder="Short Description"
+                            value={newTaskForm.shortDescription}
+                            onChange={(e) => setNewTaskForm({ ...newTaskForm, shortDescription: e.target.value })}
+                        />
+                        <textarea
+                            className="w-full p-2 mb-4 rounded bg-gray-700 text-white"
+                            placeholder="Long Description"
+                            value={newTaskForm.longDescription}
+                            onChange={(e) => setNewTaskForm({ ...newTaskForm, longDescription: e.target.value })}
+                        />
+                        <div className="flex justify-end gap-2">
+                            <button onClick={() => setShowAddModal(false)} className="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded-xl">Cancel</button>
+                            <button onClick={handleAddSubmit} className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-xl">Add Task</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
 
             {/* Edit Task Modal */}
             {taskToEdit && (
