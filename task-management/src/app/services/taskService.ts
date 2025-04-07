@@ -1,17 +1,9 @@
 import api from "./api";
 import { ITask, ITaskUpdateRequest } from "@/interfaces/responses";
 
-export async function toggleTaskStatus(id: string, currentStatus: boolean) {
-    try {
-        const response = await api.put(`/tasks/${id}`, {
-            isDone: !currentStatus,
-        });
-        return response.data;
-    } catch (err) {
-        console.error("Failed to toggle task status", err);
-        return null;
-    }
-}
+export const toggleTaskStatus = async (taskId: string, newStatus: boolean) => {
+    await api.put(`/tasks/${taskId}`, { isDone: newStatus });
+};
 
 export async function deleteTask(id: string) {
     try {
@@ -23,13 +15,12 @@ export async function deleteTask(id: string) {
     }
 }
 
-// (Opcional) para edição futura
-export async function updateTask(id: string, updatedTask: ITaskUpdateRequest) {
-    try {
-        const response = await api.put(`/tasks/${id}`, updatedTask);
-        return response.data;
-    } catch (err) {
-        console.error("Failed to update task", err);
-        return null;
-    }
-}
+
+export const updateTask = async (taskId: string, updatedTask: {
+    name: string;
+    shortDescription: string;
+    longDescription: string;
+}) => {
+    const response = await api.put(`/tasks/${taskId}`, updatedTask);
+    return response.data;
+};

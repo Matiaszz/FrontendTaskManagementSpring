@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { ITaskList } from "@/interfaces/responses";
 import { getTaskListByLoggedUser } from "../services/taskListService";
 import { getUser } from "../services/userService";
-import { deleteTask, toggleTaskStatus } from "../services/taskService";
+import { deleteTask, toggleTaskStatus, updateTask } from "../services/taskService";
 import { useRouter } from "next/navigation";
 import { ChevronDown, ChevronUp, Edit, Trash2, CheckCircle, Undo, X } from "lucide-react";
 
@@ -12,6 +12,8 @@ const Task = () => {
     const [openTaskListId, setOpenTaskListId] = useState<string | null>(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
+    const [taskToEdit, setTaskToEdit] = useState<any | null>(null);
+    const [editForm, setEditForm] = useState({ name: "", shortDescription: "", longDescription: "" });
     const router = useRouter();
 
     useEffect(() => {
@@ -56,6 +58,24 @@ const Task = () => {
         setTaskToDelete(null);
     };
 
+    const openEditModal = (task: any) => {
+        setTaskToEdit(task);
+        setEditForm({
+            name: task.name,
+            shortDescription: task.shortDescription,
+            longDescription: task.longDescription
+        });
+    };
+
+    const handleEditSubmit = async () => {
+        if (taskToEdit) {
+            await updateTask(taskToEdit.id, editForm);
+            const updatedData = await getTaskListByLoggedUser();
+            setTaskLists(updatedData);
+            setTaskToEdit(null);
+        }
+    };
+
     return (
         <div className="min-h-screen bg-gray-950 text-white px-6 py-10">
             <h1 className="text-4xl font-bold text-center mb-10">Your Task Lists</h1>
@@ -96,7 +116,7 @@ const Task = () => {
                                                 <p className="text-sm text-gray-500 mt-1">{task.longDescription}</p>
                                             </div>
                                             <div className="flex flex-col items-center gap-2">
-                                                <button className="hover:text-blue-400">
+                                                <button className="hover:text-blue-400" onClick={() => openEditModal(task)}>
                                                     <Edit size={18} />
                                                 </button>
                                                 <button className="hover:text-red-500" onClick={() => confirmDelete(task.id)}>
@@ -117,6 +137,7 @@ const Task = () => {
                 ))}
             </div>
 
+            {/* Delete Modal */}
             {showDeleteModal && (
                 <div className="fixed inset-0 bg-black/70 flex justify-center items-center z-50">
                     <div className="bg-gray-800 p-6 rounded-xl shadow-xl text-center w-full max-w-sm border border-gray-700">
@@ -134,6 +155,47 @@ const Task = () => {
                                 className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-xl font-medium flex items-center gap-1"
                             >
                                 <X size={16} /> Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Edit Modal */}
+            {taskToEdit && (
+                <div className="fixed inset-0 bg-black/70 flex justify-center items-center z-50">
+                    <div className="bg-gray-800 p-6 rounded-xl shadow-xl w-full max-w-md border border-gray-700 text-white">
+                        <h2 className="text-xl font-semibold mb-4">Edit Task</h2>
+                        <input
+                            className="w-full p-2 mb-3 rounded bg-gray-700 text-white"
+                            placeholder="Name"
+                            value={editForm.name}
+                            onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                        />
+                        <input
+                            className="w-full p-2 mb-3 rounded bg-gray-700 text-white"
+                            placeholder="Short Description"
+                            value={editForm.shortDescription}
+                            onChange={(e) => setEditForm({ ...editForm, shortDescription: e.target.value })}
+                        />
+                        <textarea
+                            className="w-full p-2 mb-4 rounded bg-gray-700 text-white"
+                            placeholder="Long Description"
+                            value={editForm.longDescription}
+                            onChange={(e) => setEditForm({ ...editForm, longDescription: e.target.value })}
+                        />
+                        <div className="flex justify-end gap-2">
+                            <button
+                                className="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded-xl"
+                                onClick={() => setTaskToEdit(null)}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-xl"
+                                onClick={handleEditSubmit}
+                            >
+                                Save
                             </button>
                         </div>
                     </div>
