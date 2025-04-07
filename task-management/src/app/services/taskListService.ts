@@ -20,3 +20,13 @@ export const createTaskList = async (taskListData: {
     const response = await api.post("/taskList", taskListData);
     return response.data;
 };
+
+export const updateTaskList = async (id: string, updatedData: any) => {
+    const response = await api.put(`/taskList/${id}`, updatedData);
+    return response.data;
+};
+
+export const deleteTaskList = async (id: string) => {
+    const response = await api.delete(`/taskList/${id}`);
+    return response.data;
+};

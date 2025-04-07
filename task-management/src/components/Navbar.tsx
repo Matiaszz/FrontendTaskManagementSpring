@@ -28,7 +28,7 @@ const Navbar = () => {
 
             <div className='flex gap-6'>
                 <Switch onCheckedChange={switchAction} />
-                <a href="/"><FolderIcon /></a>
+                <a href="/tasks"><FolderIcon /></a>
                 <a href="/profile"><UserIcon /></a>
             </div>
         </div>
