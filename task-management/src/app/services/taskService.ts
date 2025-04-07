@@ -5,6 +5,22 @@ export const toggleTaskStatus = async (taskId: string, newStatus: boolean) => {
     await api.put(`/tasks/${taskId}`, { isDone: newStatus });
 };
 
+export const createTask = async (
+    taskListId: string,
+    taskData: {
+        name: string;
+        shortDescription: string;
+        longDescription: string;
+    }
+) => {
+    const requestBody = {
+        ...taskData,
+        taskListId,
+    };
+
+    const response = await api.post(`/tasks`, requestBody);
+    return response.data;
+};
 export async function deleteTask(id: string) {
     try {
         await api.delete(`/tasks/${id}`);
