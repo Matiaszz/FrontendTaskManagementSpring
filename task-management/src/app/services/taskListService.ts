@@ -11,3 +11,12 @@ export async function getTaskListByLoggedUser(): Promise<ITaskList[] | null> {
         return null;
     }
 }
+
+export const createTaskList = async (taskListData: {
+    title: string;
+    shortDescription: string;
+    longDescription: string;
+}) => {
+    const response = await api.post("/taskList", taskListData);
+    return response.data;
+};
